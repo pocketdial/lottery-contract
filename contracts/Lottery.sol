@@ -1,6 +1,8 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.21;
 
-contract Lottery {
+import "./Ownable.sol";
+
+contract Lottery is Ownable {
   address public owner;
   uint public last_completed_migration;
 
@@ -8,7 +10,7 @@ contract Lottery {
     if (msg.sender == owner) _;
   }
 
-  function Migrations() public {
+  function Lottery() public {
     owner = msg.sender;
   }
 
