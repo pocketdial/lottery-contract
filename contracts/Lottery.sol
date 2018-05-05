@@ -4,6 +4,8 @@ import "./Ownable.sol";
 import "./SafeMath.sol";
 
 contract Lottery is Ownable {
+  using SafeMath for uint;
+  
   address public owner;
   uint public last_completed_migration;
 
