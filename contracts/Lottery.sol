@@ -7,19 +7,16 @@ contract Lottery is Ownable {
   address public owner;
   uint public last_completed_migration;
 
-  modifier restricted() {
-    if (msg.sender == owner) _;
-  }
-
-  function Lottery() public {
-    owner = msg.sender;
-  }
-
-  function setCompleted(uint completed) public restricted {
+  function buyTicket() public {
     last_completed_migration = completed;
   }
+  
+  function _generateRandomNumber(uint _numberOfPlayers) private view returns (uint) {
+    uint rand = uint(keccak256(_str));
+    return rand % dModulus;
+  }
 
-  function upgrade(address new_address) public restricted {
+  function chooseTheWinner() public onlyOwner{
     Migrations upgraded = Migrations(new_address);
     upgraded.setCompleted(last_completed_migration);
   }
