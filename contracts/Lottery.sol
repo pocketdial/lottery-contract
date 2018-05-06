@@ -5,21 +5,27 @@ import "./SafeMath.sol";
 
 contract Lottery is Ownable {
   using SafeMath for uint;
+
+  // TODO events
   
-  address public owner;
-  uint public last_completed_migration;
+  address[] private players;
 
   function buyTicket() public {
-    last_completed_migration = completed;
+    players.push(msg.sender);
   }
   
   function _generateRandomNumber(uint _numberOfPlayers) private view returns (uint) {
-    uint rand = uint(keccak256(_str));
-    return rand % dModulus;
+    return (uint(keccak256(blockhash(block.number - 1), msg.sender)) % _numberOfPlayers);
   }
 
-  function chooseTheWinner() public onlyOwner{
-    Migrations upgraded = Migrations(new_address);
-    upgraded.setCompleted(last_completed_migration);
+  function play() public onlyOwner{
+    require (players.length != 0);
+    _generateRandomNumber(players.length);
+
+    // pick the winner
+
+    // clear array
+    delete players;
+    players.length = 0;
   }
 }
