@@ -11,10 +11,10 @@ contract Lottery is Ownable {
   event PickTheWinner(address winner);
   
   address[] private players;
-  // uint ticketPrice;
+  uint ticketPrice = 0.01 ether;
 
   function buyTicket() external payable {
-  //  require(msg.value == ticketPrice);
+    require(msg.value == ticketPrice);
     players.push(msg.sender);
     emit NewPlayer(msg.sender); 
   }
@@ -25,14 +25,14 @@ contract Lottery is Ownable {
 
   function play() public onlyOwner {
     // generate random number:
-    require (players.length != 0);
+    require (players.length > 1);
     uint randNum = _generateRandomNumber(players.length);
     emit NewWinNumber(randNum);
 
     // choose the winner:
     address winner = players[randNum];
     emit PickTheWinner(winner);
-    // winner.transfer(this.balance);
+    winner.transfer(address(this).balance);
 
     // clear array
     delete players;
