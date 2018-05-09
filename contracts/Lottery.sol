@@ -1,10 +1,58 @@
 pragma solidity ^0.4.21;
 
-import "./Ownable.sol";
-import "./SafeMath.sol";
+// import "./Ownable.sol";
+// import "./SafeMath.sol";
+
+/**
+ * @title Ownable
+ * @dev The Ownable contract has an owner address, and provides basic authorization control
+ * functions, this simplifies the implementation of "user permissions".
+ */
+contract Ownable {
+  address public owner;
+
+
+  event OwnershipRenounced(address indexed previousOwner);
+  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+
+  /**
+   * @dev The Ownable constructor sets the original `owner` of the contract to the sender
+   * account.
+   */
+  function Ownable() public {
+    owner = msg.sender;
+  }
+
+  /**
+   * @dev Throws if called by any account other than the owner.
+   */
+  modifier onlyOwner() {
+    require(msg.sender == owner);
+    _;
+  }
+
+  /**
+   * @dev Allows the current owner to transfer control of the contract to a newOwner.
+   * @param newOwner The address to transfer ownership to.
+   */
+  function transferOwnership(address newOwner) public onlyOwner {
+    require(newOwner != address(0));
+    emit OwnershipTransferred(owner, newOwner);
+    owner = newOwner;
+  }
+
+  /**
+   * @dev Allows the current owner to relinquish control of the contract.
+   */
+  function renounceOwnership() public onlyOwner {
+    emit OwnershipRenounced(owner);
+    owner = address(0);
+  }
+}
 
 contract Lottery is Ownable {
-  using SafeMath for uint;
+  // using SafeMath for uint;
 
   event NewPlayer(address addressOfPlayer);
   event NewWinNumber(uint winNumber);
@@ -12,6 +60,7 @@ contract Lottery is Ownable {
   
   address[] private players;
   uint ticketPrice = 0.01 ether;
+  uint fee = 0.01 ether; //TODO add %-def
 
   function buyTicket() external payable {
     require(msg.value == ticketPrice);
@@ -33,6 +82,7 @@ contract Lottery is Ownable {
     address winner = players[randNum];
     emit PickTheWinner(winner);
     winner.transfer(address(this).balance);
+    owner.transfer(fee);
 
     // clear array
     delete players;
