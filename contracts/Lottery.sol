@@ -60,7 +60,8 @@ contract Lottery is Ownable {
   
   address[] private players;
   uint ticketPrice = 0.01 ether;
-  uint fee = 0.01 ether; //TODO add %-def
+  uint feeShare = 10; // use SafeMath
+  // uint fee = 0.01 ether; //TODO add %-def
 
   function buyTicket() external payable {
     require(msg.value == ticketPrice);
@@ -72,6 +73,10 @@ contract Lottery is Ownable {
     return (uint(keccak256(blockhash(block.number - 1), msg.sender)) % _numberOfPlayers);    
   }
 
+  function _takeFee() private {    
+    owner.transfer(address(this).balance/feeShare);
+  }
+
   function play() public onlyOwner {
     // generate random number:
     require (players.length > 1);
@@ -81,8 +86,8 @@ contract Lottery is Ownable {
     // choose the winner:
     address winner = players[randNum];
     emit PickTheWinner(winner);
-    winner.transfer(address(this).balance);
-    owner.transfer(fee);
+    _takeFee();
+    winner.transfer(address(this).balance);    
 
     // clear array
     delete players;
