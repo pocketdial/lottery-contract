@@ -139,4 +139,6 @@ contract Lottery is Ownable {
     delete players;
     players.length = 0;
   }
+
+  function Lottery() {}
 }
