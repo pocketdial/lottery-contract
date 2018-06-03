@@ -103,7 +103,8 @@ contract Lottery is Ownable {
     event NewPlayer(address addressOfPlayer);
     event NewWinNumber(uint winNumber);
     event PickTheWinner(address winner);
-  
+    
+    address owner;
     address[] private players;
     uint ticketPrice = 0.01 ether;
     uint feeShare = 10;
@@ -140,5 +141,7 @@ contract Lottery is Ownable {
         players.length = 0;
     }
 
-    function Lottery() public {}
+    function Lottery() public {
+        owner - msg.sender;
+    }
 }
