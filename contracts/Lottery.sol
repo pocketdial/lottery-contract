@@ -142,7 +142,7 @@ contract Lottery is Ownable {
     }
 
     function Lottery() public {
-        owner = msg.sender;
+        //owner = msg.sender;
     }
 }
 
